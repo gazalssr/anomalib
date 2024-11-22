@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -e
+
+if [[ -n "${ANOMALIB_DEBUG}" ]]; then
+    set -x
+fi
+
+source $(dirname "$0")/env
+
+function usage() {
+    echo -n \
+        "Usage: $(basename "$0")\n
+Run a console in a docker container with all prerequisites installed.\n"
+}
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
+    docker run --rm -it --gpus 0 \
+        --ipc=host \
+        -v /home/serg3401/DEV/Anomalib:/anomalib \
+        -v /home/serg3401/DEV/Anomalib/DATASETS:/anomalib/DATASETS \
+        -w /anomalib \
+        -p 8000:8000 \
+        --name anomalib_container \
+        anomalib_image:local \
+        /bin/bash
+fi

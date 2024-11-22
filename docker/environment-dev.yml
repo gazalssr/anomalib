@@ -1,0 +1,25 @@
+name: anomalib
+channels:
+  - pytorch
+  - defaults
+dependencies:
+  - pip
+  - scikit-learn
+  - pip:
+      - scikit-learn
+      - numpy
+      - pandas
+      - matplotlib
+      - opencv-python
+      - pyqt5
+      - pytorch
+      - timm
+      - einops
+      - wandb
+      - openvino-dev[onnx]
+      - FrEIA
+      - open_clip_torch
+      - gitpython
+      - kornia
+      - imgaug
+      - jupyterlab

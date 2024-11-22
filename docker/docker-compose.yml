@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  anomalib:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - /home/serg3401/DEV/Anomalib:/anomalib
+      - /home/serg3401/DEV/Anomalib/DATASETS:/anomalib/DATASETS
+    ports:
+      - "8000:8000"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    entrypoint: /bin/bash

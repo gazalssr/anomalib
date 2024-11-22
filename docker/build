@@ -1,0 +1,66 @@
+!/bin/bash
+
+set -e
+
+if [[ -n "${ANOMALIB_DEBUG}" ]]; then
+    set -x
+fi
+
+# Source the environment file if it exists
+source $(dirname "$0")/env
+
+function usage() {
+    echo -n \
+        "Usage: $(basename "$0")
+Build Anomalib container. Must be run from the repository root
+
+Options:
+--no-cache  Do not use cache when building the images
+--pull      Attempt to pull upstream images before building
+"
+}
+
+# Parse command-line arguments
+while [[ $# -gt 0 ]]
+do
+    key="$1"
+    case $key in
+        --help)
+        usage
+        exit 0
+        shift
+        ;;
+        
+        --no-cache)
+        NO_CACHE="--no-cache"
+        shift
+        ;;
+        
+        --pull)
+        PULL="--pull"
+        shift
+        ;;
+    esac
+done
+
+# If the script is executed directly, build the Docker image
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
+    if [ "${1:-}" = "--help" ]; then
+        usage
+    else
+        # Removed the `--target dev` to avoid targeting a missing stage
+        docker build $PULL $NO_CACHE -t anomalib_image:local -f docker/Dockerfile .
+    fi
+
+    # Check if any existing debug containers exist, and remove them
+    if [ "$(docker ps -aqf name=$DOCKER_CONTAINER_NAME)" ]; then
+        # Container exists
+        if [ "$(docker ps -qf name=$DOCKER_CONTAINER_NAME)" ]; then
+            # Container is running
+            echo "Kill debug container"
+            docker kill $DOCKER_DEBUG_NAME
+        fi
+        echo "Remove debug container"
+        docker rm -f $DOCKER_DEBUG_NAME
+    fi
+fi

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# This script starts a Jupyter notebook server inside the Docker container
+
+docker run --rm -it --gpus 0 \
+    --ipc=host \
+    -v /home/serg3401/DEV/Anomalib/anomalib:/anomalib \
+    -v /home/serg3401/DEV/Anomalib/DATASETS:/anomalib/DATASETS \
+    -p 8888:8888 \
+    --entrypoint /bin/bash \
+    anomalib_image:local \
